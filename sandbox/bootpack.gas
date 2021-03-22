@@ -8,9 +8,9 @@ _HariMain:
 	movl	%esp, %ebp
 	call	_init_palette
 	movswl	4086,%eax
-	movswl	4084,%edx
 	pushl	%eax
-	pushl	%edx
+	movswl	4084,%eax
+	pushl	%eax
 	pushl	4088
 	call	_init_screen
 	addl	$12, %esp
