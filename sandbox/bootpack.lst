@@ -16,9 +16,9 @@
     16 00000001 89 E5                           	MOV	EBP,ESP
     17 00000003 E8 00000025                     	CALL	_init_palette
     18 00000008 0F BF 05 00000FF6               	MOVSX	EAX,WORD [4086]
-    19 0000000F 0F BF 15 00000FF4               	MOVSX	EDX,WORD [4084]
-    20 00000016 50                              	PUSH	EAX
-    21 00000017 52                              	PUSH	EDX
+    19 0000000F 50                              	PUSH	EAX
+    20 00000010 0F BF 05 00000FF4               	MOVSX	EAX,WORD [4084]
+    21 00000017 50                              	PUSH	EAX
     22 00000018 FF 35 00000FF8                  	PUSH	DWORD [4088]
     23 0000001E E8 000000F6                     	CALL	_init_screen
     24 00000023 83 C4 0C                        	ADD	ESP,12
