@@ -64,55 +64,61 @@
     64 000000A1 6A 60                           	PUSH	96
     65 000000A3 E8 [00000000]                   	CALL	_io_in8
     66 000000A8 83 C4 0C                        	ADD	ESP,12
-    67 000000AB 80 3D [0000001F] 00             	CMP	BYTE [_keybuf+1],0
-    68 000000B2 75 0C                           	JNE	L2
-    69 000000B4 A2 [0000001E]                   	MOV	BYTE [_keybuf],AL
-    70 000000B9 C6 05 [0000001F] 01             	MOV	BYTE [_keybuf+1],1
-    71 000000C0                                 L2:
-    72 000000C0 C9                              	LEAVE
-    73 000000C1 C3                              	RET
-    74                                          [SECTION .data]
-    75 00000000                                 LC0:
-    76 00000000 49 4E 54 20 32 43 20 28 49 52   	DB	"INT 2C (IRQ-12) : PS/2 mouse",0x00
+    67 000000AB 89 C2                           	MOV	EDX,EAX
+    68 000000AD A1 [00000040]                   	MOV	EAX,DWORD [_keybuf+32]
+    69 000000B2 83 F8 1F                        	CMP	EAX,31
+    70 000000B5 7F 0C                           	JG	L2
+    71 000000B7 88 90 [00000020]                	MOV	BYTE [_keybuf+EAX],DL
+    72 000000BD 40                              	INC	EAX
+    73 000000BE A3 [00000040]                   	MOV	DWORD [_keybuf+32],EAX
+    74 000000C3                                 L2:
+    75 000000C3 C9                              	LEAVE
+    76 000000C4 C3                              	RET
+    77                                          [SECTION .data]
+    78 00000000                                 LC0:
+    79 00000000 49 4E 54 20 32 43 20 28 49 52   	DB	"INT 2C (IRQ-12) : PS/2 mouse",0x00
        0000000A 51 2D 31 32 29 20 3A 20 50 53 
        00000014 2F 32 20 6D 6F 75 73 65 00 
-    77                                          [SECTION .text]
-    78 000000C2                                 	GLOBAL	_inthandler2c
-    79 000000C2                                 _inthandler2c:
-    80 000000C2 55                              	PUSH	EBP
-    81 000000C3 89 E5                           	MOV	EBP,ESP
-    82 000000C5 6A 0F                           	PUSH	15
-    83 000000C7 68 000000FF                     	PUSH	255
-    84 000000CC 6A 00                           	PUSH	0
-    85 000000CE 6A 00                           	PUSH	0
-    86 000000D0 6A 00                           	PUSH	0
-    87 000000D2 0F BF 05 00000FF4               	MOVSX	EAX,WORD [4084]
-    88 000000D9 50                              	PUSH	EAX
-    89 000000DA FF 35 00000FF8                  	PUSH	DWORD [4088]
-    90 000000E0 E8 [00000000]                   	CALL	_boxfill8
-    91 000000E5 68 [00000000]                   	PUSH	LC0
-    92 000000EA 6A 07                           	PUSH	7
-    93 000000EC 6A 00                           	PUSH	0
-    94 000000EE 6A 00                           	PUSH	0
-    95 000000F0 0F BF 05 00000FF4               	MOVSX	EAX,WORD [4084]
-    96 000000F7 50                              	PUSH	EAX
-    97 000000F8 FF 35 00000FF8                  	PUSH	DWORD [4088]
-    98 000000FE E8 [00000000]                   	CALL	_putfonts8_asc
-    99 00000103 83 C4 34                        	ADD	ESP,52
-   100 00000106                                 L5:
-   101 00000106 E8 [00000000]                   	CALL	_io_hlt
-   102 0000010B EB F9                           	JMP	L5
-   103 0000010D                                 	GLOBAL	_inthandler27
-   104 0000010D                                 _inthandler27:
-   105 0000010D 55                              	PUSH	EBP
-   106 0000010E 89 E5                           	MOV	EBP,ESP
-   107 00000110 6A 67                           	PUSH	103
-   108 00000112 6A 20                           	PUSH	32
-   109 00000114 E8 [00000000]                   	CALL	_io_out8
-   110 00000119 C9                              	LEAVE
-   111 0000011A C3                              	RET
-   112 0000011B                                 	GLOBAL	_keybuf
-   113                                          [SECTION .data]
-   114 0000001D 00                              	ALIGNB	2
-   115 0000001E                                 _keybuf:
-   116 0000001E 00 00                           	RESB	2
+    80                                          [SECTION .text]
+    81 000000C5                                 	GLOBAL	_inthandler2c
+    82 000000C5                                 _inthandler2c:
+    83 000000C5 55                              	PUSH	EBP
+    84 000000C6 89 E5                           	MOV	EBP,ESP
+    85 000000C8 6A 0F                           	PUSH	15
+    86 000000CA 68 000000FF                     	PUSH	255
+    87 000000CF 6A 00                           	PUSH	0
+    88 000000D1 6A 00                           	PUSH	0
+    89 000000D3 6A 00                           	PUSH	0
+    90 000000D5 0F BF 05 00000FF4               	MOVSX	EAX,WORD [4084]
+    91 000000DC 50                              	PUSH	EAX
+    92 000000DD FF 35 00000FF8                  	PUSH	DWORD [4088]
+    93 000000E3 E8 [00000000]                   	CALL	_boxfill8
+    94 000000E8 68 [00000000]                   	PUSH	LC0
+    95 000000ED 6A 07                           	PUSH	7
+    96 000000EF 6A 00                           	PUSH	0
+    97 000000F1 6A 00                           	PUSH	0
+    98 000000F3 0F BF 05 00000FF4               	MOVSX	EAX,WORD [4084]
+    99 000000FA 50                              	PUSH	EAX
+   100 000000FB FF 35 00000FF8                  	PUSH	DWORD [4088]
+   101 00000101 E8 [00000000]                   	CALL	_putfonts8_asc
+   102 00000106 83 C4 34                        	ADD	ESP,52
+   103 00000109                                 L5:
+   104 00000109 E8 [00000000]                   	CALL	_io_hlt
+   105 0000010E EB F9                           	JMP	L5
+   106 00000110                                 	GLOBAL	_inthandler27
+   107 00000110                                 _inthandler27:
+   108 00000110 55                              	PUSH	EBP
+   109 00000111 89 E5                           	MOV	EBP,ESP
+   110 00000113 6A 67                           	PUSH	103
+   111 00000115 6A 20                           	PUSH	32
+   112 00000117 E8 [00000000]                   	CALL	_io_out8
+   113 0000011C C9                              	LEAVE
+   114 0000011D C3                              	RET
+   115 0000011E                                 	GLOBAL	_keybuf
+   116                                          [SECTION .data]
+   117 0000001D 00 00 00                        	ALIGNB	16
+   118 00000020                                 _keybuf:
+   119 00000020 00 00 00 00 00 00 00 00 00 00   	RESB	36
+       0000002A 00 00 00 00 00 00 00 00 00 00 
+       00000034 00 00 00 00 00 00 00 00 00 00 
+       0000003E 00 00 00 00 00 00 
