@@ -220,10 +220,10 @@
    214 00000259 FF B5 FFFFFE0C                  	PUSH	DWORD [-500+EBP]
    215 0000025F E8 [00000000]                   	CALL	_sheet_updown
    216 00000264 6A 01                           	PUSH	1
-   217 00000266 FF B5 FFFFFE04                  	PUSH	DWORD [-508+EBP]
+   217 00000266 FF B5 FFFFFE08                  	PUSH	DWORD [-504+EBP]
    218 0000026C E8 [00000000]                   	CALL	_sheet_updown
    219 00000271 6A 02                           	PUSH	2
-   220 00000273 FF B5 FFFFFE08                  	PUSH	DWORD [-504+EBP]
+   220 00000273 FF B5 FFFFFE04                  	PUSH	DWORD [-508+EBP]
    221 00000279 E8 [00000000]                   	CALL	_sheet_updown
    222 0000027E 56                              	PUSH	ESI
    223 0000027F 57                              	PUSH	EDI
