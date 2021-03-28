@@ -9,7 +9,7 @@
      9 00000000                                 	EXTERN	_asm_inthandler21
     10 00000000                                 	EXTERN	_asm_inthandler27
     11 00000000                                 	EXTERN	_asm_inthandler2c
-    12 00000000                                 	EXTERN	_asm_cons_putchar
+    12 00000000                                 	EXTERN	_asm_hrb_api
     13 00000000                                 [FILE "dsctbl.c"]
     14                                          [SECTION .text]
     15 00000000                                 	GLOBAL	_init_gdtidt
@@ -85,7 +85,7 @@
     85 000000ED 83 C4 20                        	ADD	ESP,32
     86 000000F0 68 0000008E                     	PUSH	142
     87 000000F5 6A 10                           	PUSH	16
-    88 000000F7 68 [00000000]                   	PUSH	_asm_cons_putchar
+    88 000000F7 68 [00000000]                   	PUSH	_asm_hrb_api
     89 000000FC 68 0026FA00                     	PUSH	2554368
     90 00000101 E8 00000051                     	CALL	_set_gatedesc
     91 00000106 8D 65 F8                        	LEA	ESP,DWORD [-8+EBP]

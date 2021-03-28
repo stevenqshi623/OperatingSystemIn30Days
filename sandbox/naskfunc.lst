@@ -17,10 +17,10 @@
     17 00000000                                 		GLOBAL	_asm_inthandler27, _asm_inthandler2c
     18 00000000                                 		GLOBAL	_memtest_sub
     19 00000000                                 		GLOBAL	_farjmp, _farcall
-    20 00000000                                 		GLOBAL	_asm_cons_putchar
+    20 00000000                                 		GLOBAL	_asm_hrb_api
     21 00000000                                 		EXTERN	_inthandler20, _inthandler21
     22 00000000                                 		EXTERN	_inthandler27, _inthandler2c
-    23 00000000                                 		EXTERN	_cons_putchar
+    23 00000000                                 		EXTERN	_hrb_api
     24 00000000                                 
     25                                          [SECTION .text]
     26 00000000                                 
@@ -217,15 +217,12 @@
    217 00000124 FF 5C 24 04                     		CALL	FAR	[ESP+4]				; eip, cs
    218 00000128 C3                              		RET
    219 00000129                                 
-   220 00000129                                 _asm_cons_putchar:
+   220 00000129                                 _asm_hrb_api:
    221 00000129 FB                              		STI
-   222 0000012A 60                              		PUSHAD
-   223 0000012B 6A 01                           		PUSH	1
-   224 0000012D 25 000000FF                     		AND		EAX,0xff	; AHやEAXの上位を0にして、EAXに文字コードが入った状態にする。
-   225 00000132 50                              		PUSH	EAX
-   226 00000133 FF 35 00000FEC                  		PUSH	DWORD [0x0fec]	; メモリの内容を読み込んでその値をPUSHする
-   227 00000139 E8 [00000000]                   		CALL	_cons_putchar
-   228 0000013E 83 C4 0C                        		ADD		ESP,12		; スタックに積んだデータを捨てる
-   229 00000141 61                              		POPAD
-   230 00000142 CF                              		IRETD
-   231 00000143                                 
+   222 0000012A 60                              		PUSHAD	; 保存のためのPUSH
+   223 0000012B 60                              		PUSHAD	; hrb_apiに渡すためのPUSH
+   224 0000012C E8 [00000000]                   		CALL	_hrb_api
+   225 00000131 83 C4 20                        		ADD		ESP,32
+   226 00000134 61                              		POPAD
+   227 00000135 CF                              		IRETD
+   228 00000136                                 
