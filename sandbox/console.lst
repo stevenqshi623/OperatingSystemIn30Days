@@ -24,7 +24,7 @@
     24 00000000                                 	EXTERN	_file_loadfile
     25 00000000                                 	EXTERN	_memman_free_4k
     26 00000000                                 	EXTERN	_set_segmdesc
-    27 00000000                                 	EXTERN	_farjmp
+    27 00000000                                 	EXTERN	_farcall
     28 00000000                                 [FILE "console.c"]
     29                                          [SECTION .text]
     30 00000000                                 	GLOBAL	_console_task
@@ -830,7 +830,7 @@
    826 00000823 83 C4 2C                        	ADD	ESP,44
    827 00000826 68 00001F58                     	PUSH	8024
    828 0000082B 6A 00                           	PUSH	0
-   829 0000082D E8 [00000000]                   	CALL	_farjmp
+   829 0000082D E8 [00000000]                   	CALL	_farcall
    830 00000832 FF 76 1C                        	PUSH	DWORD [28+ESI]
    831 00000835 53                              	PUSH	EBX
    832 00000836 68 003C0000                     	PUSH	3932160
