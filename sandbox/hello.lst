@@ -1,12 +1,14 @@
-     1 00000000                                 [BITS 32]
-     2 00000000 B0 68                           		MOV		AL,'h'
-     3 00000002 CD 40                           		INT		0x40
-     4 00000004 B0 65                           		MOV		AL,'e'
-     5 00000006 CD 40                           		INT		0x40
-     6 00000008 B0 6C                           		MOV		AL,'l'
-     7 0000000A CD 40                           		INT		0x40
-     8 0000000C B0 6C                           		MOV		AL,'l'
-     9 0000000E CD 40                           		INT		0x40
-    10 00000010 B0 6F                           		MOV		AL,'o'
-    11 00000012 CD 40                           		INT		0x40
-    12 00000014 CB                              		RETF
+     1 00000000                                 [INSTRSET "i486p"]
+     2 00000000                                 [BITS 32]
+     3 00000000 B9 00000014                     		MOV		ECX,msg
+     4 00000005                                 putloop:
+     5 00000005 2E 8A 01                        		MOV		AL,[CS:ECX]
+     6 00000008 3C 00                           		CMP		AL,0
+     7 0000000A 74 07                           		JE		fin
+     8 0000000C CD 40                           		INT		0x40
+     9 0000000E 83 C1 01                        		ADD		ECX,1
+    10 00000011 EB F2                           		JMP		putloop
+    11 00000013                                 fin:
+    12 00000013 CB                              		RETF
+    13 00000014                                 msg:
+    14 00000014 68 65 6C 6C 6F 00               		DB	"hello",0
