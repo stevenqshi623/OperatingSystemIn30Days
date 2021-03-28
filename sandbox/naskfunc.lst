@@ -16,7 +16,7 @@
     16 00000000                                 		GLOBAL	_asm_inthandler20, _asm_inthandler21
     17 00000000                                 		GLOBAL	_asm_inthandler27, _asm_inthandler2c
     18 00000000                                 		GLOBAL	_memtest_sub
-    19 00000000                                 		GLOBAL	_farjmp
+    19 00000000                                 		GLOBAL	_farjmp, _farcall
     20 00000000                                 		GLOBAL	_asm_cons_putchar
     21 00000000                                 		EXTERN	_inthandler20, _inthandler21
     22 00000000                                 		EXTERN	_inthandler27, _inthandler2c
@@ -213,12 +213,16 @@
    213 0000011F FF 6C 24 04                     		JMP		FAR	[ESP+4]				; eip, cs
    214 00000123 C3                              		RET
    215 00000124                                 
-   216 00000124                                 _asm_cons_putchar:
-   217 00000124 6A 01                           		PUSH	1
-   218 00000126 25 000000FF                     		AND		EAX,0xff	; AHやEAXの上位を0にして、EAXに文字コードが入った状態にする。
-   219 0000012B 50                              		PUSH	EAX
-   220 0000012C FF 35 00000FEC                  		PUSH	DWORD [0x0fec]	; メモリの内容を読み込んでその値をPUSHする
-   221 00000132 E8 [00000000]                   		CALL	_cons_putchar
-   222 00000137 83 C4 0C                        		ADD		ESP,12		; スタックに積んだデータを捨てる
-   223 0000013A CB                              		RETF
-   224 0000013B                                 
+   216 00000124                                 _farcall:		; void farcall(int eip, int cs);
+   217 00000124 FF 5C 24 04                     		CALL	FAR	[ESP+4]				; eip, cs
+   218 00000128 C3                              		RET
+   219 00000129                                 
+   220 00000129                                 _asm_cons_putchar:
+   221 00000129 6A 01                           		PUSH	1
+   222 0000012B 25 000000FF                     		AND		EAX,0xff	; AHやEAXの上位を0にして、EAXに文字コードが入った状態にする。
+   223 00000130 50                              		PUSH	EAX
+   224 00000131 FF 35 00000FEC                  		PUSH	DWORD [0x0fec]	; メモリの内容を読み込んでその値をPUSHする
+   225 00000137 E8 [00000000]                   		CALL	_cons_putchar
+   226 0000013C 83 C4 0C                        		ADD		ESP,12		; スタックに積んだデータを捨てる
+   227 0000013F CB                              		RETF
+   228 00000140                                 
