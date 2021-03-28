@@ -16,7 +16,7 @@
     16 00000000                                 		GLOBAL	_asm_inthandler20, _asm_inthandler21
     17 00000000                                 		GLOBAL	_asm_inthandler27, _asm_inthandler2c
     18 00000000                                 		GLOBAL	_asm_inthandler0c, _asm_inthandler0d
-    19 00000000                                 		GLOBAL	_memtest_sub
+    19 00000000                                 		GLOBAL	_asm_end_app, _memtest_sub
     20 00000000                                 		GLOBAL	_farjmp, _farcall
     21 00000000                                 		GLOBAL	_asm_hrb_api, _start_app
     22 00000000                                 		EXTERN	_inthandler20, _inthandler21
@@ -190,7 +190,7 @@
    190 000000E9 8E C0                           		MOV		ES,AX
    191 000000EB E8 [00000000]                   		CALL	_inthandler0c
    192 000000F0 83 F8 00                        		CMP		EAX,0
-   193 000000F3 0F 85 00000091                  		JNE		end_app
+   193 000000F3 0F 85 00000091                  		JNE		_asm_end_app
    194 000000F9 58                              		POP		EAX
    195 000000FA 61                              		POPAD
    196 000000FB 1F                              		POP		DS
@@ -209,8 +209,8 @@
    209 0000010B 8E D8                           		MOV		DS,AX
    210 0000010D 8E C0                           		MOV		ES,AX
    211 0000010F E8 [00000000]                   		CALL	_inthandler0d
-   212 00000114 83 F8 00                        		CMP		EAX,0		; ここだけ違う
-   213 00000117 75 71                           		JNE		end_app		; ここだけ違う
+   212 00000114 83 F8 00                        		CMP		EAX,0			; ここだけ違う
+   213 00000117 75 71                           		JNE		_asm_end_app	; ここだけ違う
    214 00000119 58                              		POP		EAX
    215 0000011A 61                              		POPAD
    216 0000011B 1F                              		POP		DS
@@ -270,37 +270,38 @@
    270 00000177 8E C0                           		MOV		ES,AX
    271 00000179 E8 [00000000]                   		CALL	_hrb_api
    272 0000017E 83 F8 00                        		CMP		EAX,0		; EAXが0でなければアプリ終了処理
-   273 00000181 75 07                           		JNE		end_app
+   273 00000181 75 07                           		JNE		_asm_end_app
    274 00000183 83 C4 20                        		ADD		ESP,32
    275 00000186 61                              		POPAD
    276 00000187 07                              		POP		ES
    277 00000188 1F                              		POP		DS
    278 00000189 CF                              		IRETD
-   279 0000018A                                 end_app:
+   279 0000018A                                 _asm_end_app:
    280 0000018A                                 ;	EAXはtss.esp0の番地
    281 0000018A 8B 20                           		MOV		ESP,[EAX]
-   282 0000018C 61                              		POPAD
-   283 0000018D C3                              		RET					; cmd_appへ帰る
-   284 0000018E                                 
-   285 0000018E                                 _start_app:		; void start_app(int eip, int cs, int esp, int ds, int *tss_esp0);
-   286 0000018E 60                              		PUSHAD		; 32ビットレジスタを全部保存しておく
-   287 0000018F 8B 44 24 24                     		MOV		EAX,[ESP+36]	; アプリ用のEIP
-   288 00000193 8B 4C 24 28                     		MOV		ECX,[ESP+40]	; アプリ用のCS
-   289 00000197 8B 54 24 2C                     		MOV		EDX,[ESP+44]	; アプリ用のESP
-   290 0000019B 8B 5C 24 30                     		MOV		EBX,[ESP+48]	; アプリ用のDS/SS
-   291 0000019F 8B 6C 24 34                     		MOV		EBP,[ESP+52]	; tss.esp0の番地
-   292 000001A3 89 65 00                        		MOV		[EBP  ],ESP		; OS用のESPを保存
-   293 000001A6 8C 55 04                        		MOV		[EBP+4],SS		; OS用のSSを保存
-   294 000001A9 8E C3                           		MOV		ES,BX
-   295 000001AB 8E DB                           		MOV		DS,BX
-   296 000001AD 8E E3                           		MOV		FS,BX
-   297 000001AF 8E EB                           		MOV		GS,BX
-   298 000001B1                                 ;	以下はRETFでアプリに行かせるためのスタック調整
-   299 000001B1 83 C9 03                        		OR		ECX,3			; アプリ用のセグメント番号に3をORする
-   300 000001B4 83 CB 03                        		OR		EBX,3			; アプリ用のセグメント番号に3をORする
-   301 000001B7 53                              		PUSH	EBX				; アプリのSS
-   302 000001B8 52                              		PUSH	EDX				; アプリのESP
-   303 000001B9 51                              		PUSH	ECX				; アプリのCS
-   304 000001BA 50                              		PUSH	EAX				; アプリのEIP
-   305 000001BB CB                              		RETF
-   306 000001BC                                 ;	アプリが終了してもここには来ない
+   282 0000018C C7 40 04 00000000               		MOV		DWORD [EAX+4],0
+   283 00000193 61                              		POPAD
+   284 00000194 C3                              		RET					; cmd_appへ帰る
+   285 00000195                                 
+   286 00000195                                 _start_app:		; void start_app(int eip, int cs, int esp, int ds, int *tss_esp0);
+   287 00000195 60                              		PUSHAD		; 32ビットレジスタを全部保存しておく
+   288 00000196 8B 44 24 24                     		MOV		EAX,[ESP+36]	; アプリ用のEIP
+   289 0000019A 8B 4C 24 28                     		MOV		ECX,[ESP+40]	; アプリ用のCS
+   290 0000019E 8B 54 24 2C                     		MOV		EDX,[ESP+44]	; アプリ用のESP
+   291 000001A2 8B 5C 24 30                     		MOV		EBX,[ESP+48]	; アプリ用のDS/SS
+   292 000001A6 8B 6C 24 34                     		MOV		EBP,[ESP+52]	; tss.esp0の番地
+   293 000001AA 89 65 00                        		MOV		[EBP  ],ESP		; OS用のESPを保存
+   294 000001AD 8C 55 04                        		MOV		[EBP+4],SS		; OS用のSSを保存
+   295 000001B0 8E C3                           		MOV		ES,BX
+   296 000001B2 8E DB                           		MOV		DS,BX
+   297 000001B4 8E E3                           		MOV		FS,BX
+   298 000001B6 8E EB                           		MOV		GS,BX
+   299 000001B8                                 ;	以下はRETFでアプリに行かせるためのスタック調整
+   300 000001B8 83 C9 03                        		OR		ECX,3			; アプリ用のセグメント番号に3をORする
+   301 000001BB 83 CB 03                        		OR		EBX,3			; アプリ用のセグメント番号に3をORする
+   302 000001BE 53                              		PUSH	EBX				; アプリのSS
+   303 000001BF 52                              		PUSH	EDX				; アプリのESP
+   304 000001C0 51                              		PUSH	ECX				; アプリのCS
+   305 000001C1 50                              		PUSH	EAX				; アプリのEIP
+   306 000001C2 CB                              		RETF
+   307 000001C3                                 ;	アプリが終了してもここには来ない
