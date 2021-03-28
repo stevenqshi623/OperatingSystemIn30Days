@@ -948,3 +948,21 @@
    943 00000949 5F                              	POP	EDI
    944 0000094A 5D                              	POP	EBP
    945 0000094B E9 FFFFF99C                     	JMP	_cons_putchar
+   946                                          [SECTION .data]
+   947 00000066                                 LC10:
+   948 00000066 0A 49 4E 54 20 30 44 20 3A 0A   	DB	0x0A,"INT 0D :",0x0A," General Protected Exception.",0x0A,0x00
+       00000070 20 47 65 6E 65 72 61 6C 20 50 
+       0000007A 72 6F 74 65 63 74 65 64 20 45 
+       00000084 78 63 65 70 74 69 6F 6E 2E 0A 
+       0000008E 00 
+   949                                          [SECTION .text]
+   950 00000950                                 	GLOBAL	_inthandler0d
+   951 00000950                                 _inthandler0d:
+   952 00000950 55                              	PUSH	EBP
+   953 00000951 89 E5                           	MOV	EBP,ESP
+   954 00000953 68 [00000066]                   	PUSH	LC10
+   955 00000958 FF 35 00000FEC                  	PUSH	DWORD [4076]
+   956 0000095E E8 FFFFFAE7                     	CALL	_cons_putstr0
+   957 00000963 B8 00000001                     	MOV	EAX,1
+   958 00000968 C9                              	LEAVE
+   959 00000969 C3                              	RET
